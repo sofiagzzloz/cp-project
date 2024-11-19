@@ -4,11 +4,12 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <ctype.h>
 
 #define PORT 8080
 #define BUFFER_SIZE 1024
 
-#include <ctype.h>
+
 
 // Convert command to uppercase
 void to_uppercase(char *str) {
