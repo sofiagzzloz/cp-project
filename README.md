@@ -43,15 +43,23 @@ System Uptime: Reports how long the system has been running.
 
 HOW TO RUN It:
 -Run the server on your first computer (turn it into executables)
+
 -Use the ifconfig/ipconfig command to retrieve the IP addresses of the systems
+
 -Replace the IP address in the server code with the actual IP address of the server computer
+
 -Run the server on the other computer 
+
 -Compile the server: gcc server.c -o server -> run it wit ./server
+
 -Compile the client: gcc client.c -o client
+
 -Run the client on your first computer like this: ./client <IPAddress>
 
 
 REQUIRMENTS: 
 -Must be connected to the same wifi network
+
 -Make sure to not be using a VPN
+
 -Must have 2 computers
