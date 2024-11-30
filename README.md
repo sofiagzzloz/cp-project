@@ -42,6 +42,7 @@ Disk Usage: Shows the storage use of the system's disk.
 System Uptime: Reports how long the system has been running.
 
 HOW TO RUN It:
+
 -Run the server on your first computer (turn it into executables)
 
 -Use the ifconfig/ipconfig command to retrieve the IP addresses of the systems
@@ -58,6 +59,7 @@ HOW TO RUN It:
 
 
 REQUIRMENTS: 
+
 -Must be connected to the same wifi network
 
 -Make sure to not be using a VPN
