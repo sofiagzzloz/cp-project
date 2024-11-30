@@ -6,93 +6,94 @@
 #include <sys/socket.h>
 #include <ctype.h>
 
+//Constants for server setup
 #define PORT 8080
 #define BUFFER_SIZE 1024
 
-
-
-// Convert command to uppercase
+//Function to convert a string to uppercase
 void to_uppercase(char *str) {
     for (int i = 0; str[i]; i++) {
-        str[i] = toupper((unsigned char) str[i]);
+        str[i] = toupper((unsigned char) str[i]); //Each character turns into uppercase
     }
 }
 
+//Function to handle a single client connection
 void handleClient(int clientSocket) {
-    char buffer[BUFFER_SIZE];
-    char response[BUFFER_SIZE];
-    char *command;
+    char buffer[BUFFER_SIZE];  //Buffer to store the client's request
+    char response[BUFFER_SIZE]; //Buffer to store the server's response
+    char *command;             //Pointer to store the system command
 
-    // Receive a request from the client
+    //Receives a request from the client
     int bytesReceived = recv(clientSocket, buffer, BUFFER_SIZE, 0);
     if (bytesReceived < 0) {
-        perror("Receive failed");
-        close(clientSocket);
+        perror("Receive failed"); //If errors occur during receiving
+        close(clientSocket);      //Closes the socket in case of failure
         return;
     }
-    
+
     buffer[bytesReceived] = '\0';
-    to_uppercase(buffer); // Convert command to uppercase
+    to_uppercase(buffer);         //Converts the request to uppercase
     printf("Received request: %s\n", buffer);
 
-    // Map high-level commands to specific system commands
+    //Map high-level commands to specific system commands
     if (strcmp(buffer, "CPU") == 0) {
-        command = "top -l 1 | grep 'CPU usage'";
+        command = "top -l 1 | grep 'CPU usage'"; //To get CPU usage
     } else if (strcmp(buffer, "MEMORY") == 0) {
-        command = "vm_stat";
+        command = "vm_stat"; //To get memory status
     } else if (strcmp(buffer, "DISK") == 0) {
-        command = "df -h /";
+        command = "df -h /"; //To get disk space info
     } else if (strcmp(buffer, "UPTIME") == 0) {
-        command = "uptime";
+        command = "uptime"; //To get system uptime
     } else {
+        //For unknown commands
         snprintf(response, sizeof(response), "Unknown command: %s\n", buffer);
-        send(clientSocket, response, strlen(response), 0);
-        close(clientSocket);
+        send(clientSocket, response, strlen(response), 0); // Sends error response to client
+        close(clientSocket); // Closes client socket
         return;
     }
 
-    // Execute the mapped command and send response back to client
-    FILE *fp = popen(command, "r");
+    //Executes the mapped system command and sends the output to the client
+    FILE *fp = popen(command, "r"); //Opens a pipe to run the command
     if (fp == NULL) {
         perror("Failed to run command");
         close(clientSocket);
         return;
     }
 
-    // Collect command output
+    //Reads the output of the command and sends it back to the client
     while (fgets(response, sizeof(response), fp) != NULL) {
         send(clientSocket, response, strlen(response), 0);
     }
 
-    pclose(fp);
-    close(clientSocket); // Close client socket after response
+    pclose(fp);          //Close pipe
+    close(clientSocket); //Close socket
 }
 
 int main() {
-    int serverSocket, clientSocket;
-    struct sockaddr_in serverAddr, clientAddr;
-    socklen_t addrLen = sizeof(clientAddr);
+    int serverSocket, clientSocket;            //Server and client socket file descriptors
+    struct sockaddr_in serverAddr, clientAddr; //Structs to hold server and client addresses
+    socklen_t addrLen = sizeof(clientAddr);    //Length of the client address struct
 
-    // Create socket
+    //Create socket
     serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (serverSocket == -1) {
         perror("Socket creation failed");
         exit(1);
     }
 
-    // Configure server address struct
-    serverAddr.sin_family = AF_INET;
-    serverAddr.sin_addr.s_addr = INADDR_ANY;
-    serverAddr.sin_port = htons(PORT);
+    //Configure the server address struct
+    serverAddr.sin_family = AF_INET;         //Use IPv4
+    serverAddr.sin_addr.s_addr = INADDR_ANY; //Accept connections on any network interface
+    serverAddr.sin_port = htons(PORT);       //Set the port number
 
-    // Bind socket to port
+    //Bind the socket to the port and address
     if (bind(serverSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) < 0) {
         perror("Bind failed");
         close(serverSocket);
         exit(1);
     }
 
-    // Listen for connections
+    //For incoming connections
     if (listen(serverSocket, 5) < 0) {
         perror("Listen failed");
         close(serverSocket);
@@ -100,17 +101,19 @@ int main() {
     }
     printf("Server listening on port %d\n", PORT);
 
-    // Accept and handle client connections
+    //Server loop to accept and handle client connections
     while (1) {
-        clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddr, &addrLen);
+        clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddr, &addrLen); //Accept a new connection
         if (clientSocket < 0) {
             perror("Client accept failed");
-            continue;
+            continue; //keep the server running
         }
         printf("Client connected\n");
+
         handleClient(clientSocket);
     }
 
+    //Close server socket
     close(serverSocket);
     return 0;
 }
