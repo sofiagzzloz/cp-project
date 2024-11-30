@@ -58,7 +58,7 @@ HOW TO RUN It:
 -Run the client on your first computer like this: ./client <IPAddress>
 
 
-REQUIRMENTS: 
+REQUIREMENTS: 
 
 -Must be connected to the same wifi network
 
