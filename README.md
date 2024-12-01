@@ -1,18 +1,20 @@
-REMOTE SYSTEM INFORMATION RETRIEVAL TOOL
+# REMOTE SYSTEM INFORMATION RETRIEVAL TOOL
 
-ABSTRACT
+---
+
+## ABSTRACT
 The object of this project is to create a client-server monitoring tool that gathers whatever system metrics the user asks for (CPU usage, memory space and disk space). 
 It essentially allows for real time monitoring of the machine's resources from a local network.
 With the use of socket programming in C and the TCP protocol, our system establishes a client-server connection that facilitates secure and efficient data exchange.
 
-INTRODUCTION
+## INTRODUCTION
 TCP (Transmission Control Protocol) is a fundamental communication standard for connection-oriented data transfer across networks. 
 It ensures that data packets are delivered correctly by coordinating with the Internet Protocol (IP). 
 Through the use of flow control, packet acknowledgment, and error connection it guarantees reliable data delivery. 
 In order to create this tool that allows a client to submit predetermined commands to a remote server that retrieves and returns the needed system information, this project makes use of TCP.
 
 
-KEY TERMINOLOGY
+## KEY TERMINOLOGY
 Socket:  It is used to transmit commands from the client to the server and receive the related system information in return.
 
 IP Address: It is he unique identification of the server system in the LAN, allowing the client to establish a connection to request system information.
@@ -41,7 +43,7 @@ Disk Usage: Shows the storage use of the system's disk.
 
 System Uptime: Reports how long the system has been running.
 
-HOW TO RUN It:
+## HOW TO RUN It:
 
 -Run the server on your first computer (turn it into executables)
 
@@ -57,8 +59,7 @@ HOW TO RUN It:
 
 -Run the client on your first computer like this: ./client <IPAddress>
 
-
-REQUIREMENTS: 
+## REQUIREMENTS: 
 
 -Must be connected to the same wifi network
 
